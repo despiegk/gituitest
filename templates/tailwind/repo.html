@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ repo.owner }}/{{ repo.name }} - Gitea</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'gitea-bg': '#0d1117',
+                        'gitea-header': '#161b22',
+                        'gitea-border': '#30363d',
+                        'gitea-text': '#c9d1d9',
+                        'gitea-link': '#58a6ff',
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://unpoly.com/unpoly.min.js"></script>
+    <link rel="stylesheet" href="https://unpoly.com/unpoly.min.css">
+</head>
+<body class="min-h-screen bg-gitea-bg text-gitea-text">
+    <!-- Top Navigation -->
+    <nav class="bg-gitea-header border-b border-gitea-border px-4 py-2 flex items-center justify-between">
+        <div class="flex items-center gap-4">
+            <a href="/" class="text-xl font-bold text-white flex items-center gap-2">
+                <svg class="w-8 h-8" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                </svg>
+                Gitea
+            </a>
+            <input type="text" placeholder="Search..." class="px-3 py-1 text-sm bg-gitea-bg border border-gitea-border rounded-md w-64 focus:outline-none focus:border-gitea-link">
+        </div>
+        <div class="flex items-center gap-4">
+            <button class="text-sm hover:text-white">Explore</button>
+            <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-sm">U</div>
+        </div>
+    </nav>
+
+    <!-- Repository Header -->
+    <div class="bg-gitea-header border-b border-gitea-border px-6 py-4">
+        <div class="flex items-center gap-2 mb-2">
+            <svg class="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1h8z"/>
+            </svg>
+            <a href="/tailwind/{{ repo.owner }}" class="text-gitea-link hover:underline">{{ repo.owner }}</a>
+            <span class="text-gray-500">/</span>
+            <a href="/tailwind/{{ repo.owner }}/{{ repo.name }}" class="text-gitea-link hover:underline font-semibold">{{ repo.name }}</a>
+            {% if repo.is_mirror %}
+            <span class="px-2 py-0.5 text-xs border border-gitea-border rounded-full">mirror</span>
+            {% endif %}
+        </div>
+
+        {% if repo.is_mirror %}
+        <p class="text-sm text-gray-400 mb-3">
+            mirror of <a href="{{ repo.mirror_url }}" class="text-gitea-link hover:underline">{{ repo.mirror_url }}</a>
+            synced {{ repo.synced_ago }}
+        </p>
+        {% endif %}
+
+        <!-- Tabs -->
+        <div class="flex gap-4 border-b border-gitea-border -mb-4">
+            <a href="#" class="px-3 py-2 text-sm border-b-2 border-orange-500 text-white flex items-center gap-2">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 16 16"><path d="M0 1.75A.75.75 0 01.75 1h4.5a.75.75 0 010 1.5H1.5v11h13V6.75a.75.75 0 011.5 0v7.5a.75.75 0 01-.75.75H.75a.75.75 0 01-.75-.75V1.75z"/></svg>
+                Code
+            </a>
+            <a href="#" class="px-3 py-2 text-sm text-gray-400 hover:text-white flex items-center gap-2">Issues</a>
+            <a href="#" class="px-3 py-2 text-sm text-gray-400 hover:text-white">Pull requests</a>
+            <a href="#" class="px-3 py-2 text-sm text-gray-400 hover:text-white">Releases</a>
+            <a href="#" class="px-3 py-2 text-sm text-gray-400 hover:text-white">Packages</a>
+            <a href="#" class="px-3 py-2 text-sm text-gray-400 hover:text-white">Wiki</a>
+            <a href="#" class="px-3 py-2 text-sm text-gray-400 hover:text-white">Activity</a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="px-6 py-4">
+        <p class="text-gray-300 mb-4">{{ repo.description }}
+            <a href="{{ repo.website }}" class="text-gitea-link hover:underline">{{ repo.website }}</a>
+        </p>
+
+        <!-- Topics -->
+        {% if !repo.topics.is_empty() %}
+        <div class="flex gap-2 mb-4">
+            {% for topic in repo.topics %}
+            <span class="px-2 py-1 text-xs bg-blue-900/50 text-blue-300 rounded-full">{{ topic }}</span>
+            {% endfor %}
+            <button class="text-sm text-gray-400 hover:text-gitea-link">Manage topics</button>
+        </div>
+        {% endif %}
+
+        <!-- Stats -->
+        <div class="flex gap-6 text-sm text-gray-400 mb-4">
+            <span class="flex items-center gap-1">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 16 16"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"/></svg>
+                {{ repo.commits }} commits
+            </span>
+            <span class="flex items-center gap-1">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 16 16"><path d="M11.75 2.5a.75.75 0 100 1.5.75.75 0 000-1.5zm-2.25.75a2.25 2.25 0 113 2.122V6A2.5 2.5 0 0110 8.5H6a1 1 0 00-1 1v1.128a2.251 2.251 0 11-1.5 0V5.372a2.25 2.25 0 111.5 0v1.836A2.492 2.492 0 016 7h4a1 1 0 001-1v-.628A2.25 2.25 0 019.5 3.25zM4.25 12a.75.75 0 100 1.5.75.75 0 000-1.5zM3.5 3.25a.75.75 0 111.5 0 .75.75 0 01-1.5 0z"/></svg>
+                {{ repo.branches }} branches
+            </span>
+            <span class="flex items-center gap-1">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 16 16"><path d="M2.5 7.775V2.75a.25.25 0 01.25-.25h5.025a.25.25 0 01.177.073l6.25 6.25a.25.25 0 010 .354l-5.025 5.025a.25.25 0 01-.354 0l-6.25-6.25a.25.25 0 01-.073-.177zm-1.5 0V2.75C1 1.784 1.784 1 2.75 1h5.025c.464 0 .91.184 1.238.513l6.25 6.25a1.75 1.75 0 010 2.474l-5.026 5.026a1.75 1.75 0 01-2.474 0l-6.25-6.25A1.75 1.75 0 011 7.775zM6 5a1 1 0 100 2 1 1 0 000-2z"/></svg>
+                {{ repo.tags }} tags
+            </span>
+            <span class="flex items-center gap-1">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 16 16"><path d="M3.5 3.75a.25.25 0 01.25-.25h8.5a.25.25 0 01.25.25v8.5a.25.25 0 01-.25.25h-8.5a.25.25 0 01-.25-.25v-8.5z"/></svg>
+                {{ repo.size }}
+            </span>
+        </div>
+
+        <!-- Branch selector and clone -->
+        <div class="flex justify-between items-center mb-4">
+            <div class="flex gap-2">
+                <div class="relative inline-block">
+                    <button class="px-3 py-1.5 text-sm bg-gitea-header border border-gitea-border rounded-md flex items-center gap-2 hover:bg-gray-700">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 16 16"><path d="M11.75 2.5a.75.75 0 100 1.5.75.75 0 000-1.5zm-2.25.75a2.25 2.25 0 113 2.122V6A2.5 2.5 0 0110 8.5H6a1 1 0 00-1 1v1.128a2.251 2.251 0 11-1.5 0V5.372a2.25 2.25 0 111.5 0v1.836A2.492 2.492 0 016 7h4a1 1 0 001-1v-.628A2.25 2.25 0 019.5 3.25z"/></svg>
+                        {{ current_branch }}
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                </div>
+                <button class="px-3 py-1.5 text-sm bg-gitea-header border border-gitea-border rounded-md hover:bg-gray-700">Find a file</button>
+            </div>
+            <div class="flex gap-2 items-center">
+                <div class="flex rounded-md overflow-hidden border border-gitea-border">
+                    <button class="px-3 py-1.5 text-sm bg-gitea-link text-white">HTTPS</button>
+                    <button class="px-3 py-1.5 text-sm bg-gitea-header hover:bg-gray-700">SSH</button>
+                </div>
+                <input type="text" value="{{ repo.ssh_url }}" class="px-3 py-1.5 text-xs font-mono bg-gitea-bg border border-gitea-border rounded-md w-80" readonly>
+                <button class="p-1.5 bg-gitea-header border border-gitea-border rounded-md hover:bg-gray-700">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Search box -->
+        <div class="flex gap-2 mb-4">
+            <input type="text" placeholder="Search code..." class="flex-1 px-3 py-1.5 text-sm bg-gitea-bg border border-gitea-border rounded-md focus:outline-none focus:border-gitea-link">
+            <select class="px-3 py-1.5 text-sm bg-gitea-bg border border-gitea-border rounded-md">
+                <option>Exact</option>
+                <option>Regex</option>
+            </select>
+            <button class="p-1.5 bg-gitea-header border border-gitea-border rounded-md hover:bg-gray-700">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            </button>
+        </div>
+
+        <!-- Commit info -->
+        <div class="bg-gitea-header border border-gitea-border rounded-t-lg p-3 flex items-center gap-3">
+            {% for commit in commits %}
+            {% if loop.first %}
+            <div class="w-6 h-6 rounded-full bg-orange-500 flex items-center justify-center">
+                <span class="text-xs text-white">{{ commit.author_initial }}</span>
+            </div>
+            <span class="font-medium text-sm">{{ commit.author }}</span>
+            <code class="text-xs bg-gitea-bg px-2 py-1 rounded font-mono border border-gitea-border">{{ commit.short_hash }}</code>
+            {% if commit.is_signed %}
+            <svg class="w-4 h-4 text-yellow-500" fill="currentColor" viewBox="0 0 16 16"><path d="M8 16A8 8 0 108 0a8 8 0 000 16zm1.5-9.5a1.5 1.5 0 01-3 0 1.5 1.5 0 013 0zM8 9.5a.5.5 0 01.5.5v2.5a.5.5 0 01-1 0V10a.5.5 0 01.5-.5z"/></svg>
+            {% endif %}
+            <span class="text-sm text-gray-400 flex-1 truncate">{{ commit.message }}</span>
+            <span class="text-xs text-gray-500">{{ commit.time }}</span>
+            {% endif %}
+            {% endfor %}
+        </div>
+
+        <!-- File list -->
+        <div class="border border-t-0 border-gitea-border rounded-b-lg overflow-hidden">
+            <table class="w-full">
+                <tbody>
+                    {% for file in files %}
+                    <tr class="border-b border-gitea-border last:border-0 hover:bg-gitea-header" up-target="body">
+                        <td class="w-8 py-2 px-3">
+                            {% if file.is_dir %}
+                            <svg class="w-5 h-5 text-gitea-link" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M.54 3.87L.5 3a2 2 0 012-2h3.672a2 2 0 011.414.586l.828.828A2 2 0 009.828 3H13.5a2 2 0 011.95 1.555L.54 3.87z"/>
+                                <path d="M1.059 5.56L.428 12.2A2 2 0 002.42 14.5h11.16a2 2 0 001.992-2.2l-.631-6.64H1.059z"/>
+                            </svg>
+                            {% else %}
+                            <svg class="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M3.75 1.5a.25.25 0 00-.25.25v11.5c0 .138.112.25.25.25h8.5a.25.25 0 00.25-.25V6H9.75A1.75 1.75 0 018 4.25V1.5H3.75zm5.75.56v2.19c0 .138.112.25.25.25h2.19L9.5 2.06z"/>
+                            </svg>
+                            {% endif %}
+                        </td>
+                        <td class="py-2">
+                            <a href="/tailwind/{{ repo.owner }}/{{ repo.name }}/src/{{ file.path }}" class="text-gitea-link hover:underline" up-follow>{{ file.name }}</a>
+                        </td>
+                        <td class="py-2 text-gray-400 text-sm">
+                            {{ file.commit_message }}
+                            {% if !file.issue_ref.is_empty() %}
+                            (<a href="#" class="text-gitea-link hover:underline">{{ file.issue_ref }}</a>)
+                            {% endif %}
+                        </td>
+                        <td class="py-2 px-3 text-right text-gray-500 text-sm">{{ file.commit_time }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            hljs.highlightAll();
+        });
+    </script>
+</body>
+</html>

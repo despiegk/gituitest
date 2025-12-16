@@ -1,0 +1,300 @@
+[[files]]
+name = ".devcontainer"
+path = ".devcontainer"
+is_dir = true
+commit_message = "fix(devcontainer): install protoc to fix build"
+commit_time = "5 months ago"
+issue_ref = "#3267"
+
+[[files]]
+name = ".github"
+path = ".github"
+is_dir = true
+commit_message = "workflow: enable docs-update-recipe-ref"
+commit_time = "6 hours ago"
+issue_ref = "#6132"
+
+[[files]]
+name = ".husky"
+path = ".husky"
+is_dir = true
+commit_message = "Remove a bit from pre-commit that husky says we should"
+commit_time = "3 months ago"
+issue_ref = "#4286"
+
+[[files]]
+name = ".intersect"
+path = ".intersect"
+is_dir = true
+commit_message = "[FEAT] Introduce PR level security scans"
+commit_time = "10 months ago"
+issue_ref = "#968"
+
+[[files]]
+name = "bin"
+path = "bin"
+is_dir = true
+commit_message = "Upgrade node to fix canary"
+commit_time = "last month"
+issue_ref = "#5301"
+
+[[files]]
+name = "clippy-baselines"
+path = "clippy-baselines"
+is_dir = true
+commit_message = "chore: remove the google drive built-in extension"
+commit_time = "3 months ago"
+issue_ref = "#4187"
+
+[[files]]
+name = "crates"
+path = "crates"
+is_dir = true
+commit_message = "feat(goose-cli): add feature to disable update"
+commit_time = "5 hours ago"
+issue_ref = "#5886"
+
+[[files]]
+name = "documentation"
+path = "documentation"
+is_dir = true
+commit_message = "workflow: auto-update recipe-reference on release"
+commit_time = "12 hours ago"
+issue_ref = "#5988"
+
+[[files]]
+name = "examples"
+path = "examples"
+is_dir = true
+commit_message = "chore: refactor read-write lock on agent"
+commit_time = "7 months ago"
+issue_ref = "#2225"
+
+[[files]]
+name = "recipe-scanner"
+path = "recipe-scanner"
+is_dir = true
+commit_message = "chore: remove usage of non-existent env var for log dir"
+commit_time = "last month"
+issue_ref = "#5658"
+
+[[files]]
+name = "scripts"
+path = "scripts"
+is_dir = true
+commit_message = "Disallow subagents with no extensions"
+commit_time = "14 hours ago"
+issue_ref = "#5825"
+
+[[files]]
+name = "ui"
+path = "ui"
+is_dir = true
+commit_message = "Fix keyboard shortcut conflict for Focus Goose Window"
+commit_time = "5 hours ago"
+issue_ref = "#5809"
+
+[[files]]
+name = ".dockerignore"
+path = ".dockerignore"
+is_dir = false
+commit_message = "Add Docker support for Goose in CI/CD pipelines"
+commit_time = "3 months ago"
+issue_ref = "#4434"
+
+[[files]]
+name = ".gitattributes"
+path = ".gitattributes"
+is_dir = false
+commit_message = "Some system prompt tidying"
+commit_time = "last month"
+issue_ref = "#5313"
+
+[[files]]
+name = ".gitignore"
+path = ".gitignore"
+is_dir = false
+commit_message = "Add self-test recipe for goose validation"
+commit_time = "two months ago"
+issue_ref = "#5111"
+
+[[files]]
+name = ".goosehints"
+path = ".goosehints"
+is_dir = false
+commit_message = "fix: optimise reading large file content"
+commit_time = "4 months ago"
+issue_ref = "#3767"
+
+[[files]]
+name = "ACCEPTABLE_USAGE.md"
+path = "ACCEPTABLE_USAGE.md"
+is_dir = false
+commit_message = "lowercase g in goose"
+commit_time = "two months ago"
+issue_ref = "#4832"
+
+[[files]]
+name = "AGENTS.md"
+path = "AGENTS.md"
+is_dir = false
+commit_message = "clarify agent instructions"
+commit_time = "last month"
+issue_ref = "#5655"
+
+[[files]]
+name = "BUILDING_DOCKER.md"
+path = "BUILDING_DOCKER.md"
+is_dir = false
+commit_message = "docs: clarifies config file locations and purposes"
+commit_time = "last month"
+issue_ref = "#5210"
+
+[[file_contents]]
+path = "examples/client_socket.rs"
+name = "client_socket.rs"
+language = "rust"
+lines = 147
+size = "4.1 KiB"
+content = """//! Unix Socket Client Example
+//!
+//! Demonstrates how to make JSON-RPC calls to the OSIS server over Unix socket.
+//!
+//! Start the server first:
+//!    cargo run --bin osis -- --socket /tmp/osis.sock
+//!
+//! Then run this example:
+//!    cargo run --example client_socket
+
+use serde_json::{json, Value};
+use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
+use tokio::net::UnixStream;
+
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    let socket_path = "/tmp/osis.sock";
+
+    println!("=== OSIS Unix Socket Client Example ===\\n");
+    println!("Connecting to {}...\\n", socket_path);
+
+    let stream = UnixStream::connect(socket_path).await?;
+    let (reader, mut writer) = stream.into_split();
+    let mut reader = BufReader::new(reader);
+
+    // 1. Store a room
+    println!("1. Storing a room...");
+    let response = rpc_call(
+        &mut writer,
+        &mut reader,
+        "room_set",
+        json!({
+            "entity": {
+                "roomNumber": 301,
+                "roomType": "Penthouse",
+                "floor": 3,
+                "capacity": 6,
+                "pricePerNight": 899,
+                "status": "Available",
+                "amenities": "WiFi, TV, Mini-bar, Jacuzzi, Private_pool",
+            }
+        }),
+    )
+    .await?;
+    println!("   Response: {}\\n", response);
+
+    // 2. Get all rooms
+    println!("2. Getting all rooms...");
+    let response = rpc_call(
+        &mut writer,
+        &mut reader,
+        "room_list",
+        json!({}),
+    )
+    .await?;
+    println!("   Response: {}\\n", response);
+
+    // 3. Find rooms by status
+    println!("3. Finding available rooms...");
+    let response = rpc_call(
+        &mut writer,
+        &mut reader,
+        "room_find",
+        json!({
+            "query": {
+                "status": "Available"
+            }
+        }),
+    )
+    .await?;
+    println!("   Response: {}\\n", response);
+
+    Ok(())
+}
+
+async fn rpc_call(
+    writer: &mut tokio::net::unix::OwnedWriteHalf,
+    reader: &mut BufReader<tokio::net::unix::OwnedReadHalf>,
+    method: &str,
+    params: Value,
+) -> anyhow::Result<Value> {
+    let request = json!({
+        "jsonrpc": "2.0",
+        "method": method,
+        "params": params,
+        "id": 1
+    });
+
+    let mut request_str = serde_json::to_string(&request)?;
+    request_str.push('\\n');
+    writer.write_all(request_str.as_bytes()).await?;
+
+    let mut response_line = String::new();
+    reader.read_line(&mut response_line).await?;
+
+    let response: Value = serde_json::from_str(&response_line)?;
+    Ok(response)
+}"""
+
+[[file_contents]]
+path = "Cargo.toml"
+name = "Cargo.toml"
+language = "toml"
+lines = 42
+size = "1.2 KiB"
+content = """[workspace]
+resolver = "2"
+members = [
+    "crates/goose",
+    "crates/goose-cli",
+    "crates/goose-mcp",
+    "crates/goose-server",
+    "crates/goose-bench",
+]
+
+[workspace.package]
+version = "1.0.0"
+edition = "2021"
+license = "Apache-2.0"
+authors = ["Block, Inc."]
+repository = "https://github.com/block/goose"
+
+[workspace.dependencies]
+anyhow = "1.0"
+async-trait = "0.1"
+chrono = { version = "0.4", features = ["serde"] }
+clap = { version = "4", features = ["derive", "env"] }
+futures = "0.3"
+reqwest = { version = "0.12", features = ["json", "stream"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+thiserror = "1.0"
+tokio = { version = "1", features = ["full"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+uuid = { version = "1.0", features = ["v4", "serde"] }
+
+[profile.release]
+lto = true
+codegen-units = 1
+opt-level = 3
+strip = true"""

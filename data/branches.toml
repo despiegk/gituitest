@@ -1,0 +1,23 @@
+[[branches]]
+name = "main"
+is_default = true
+
+[[branches]]
+name = "develop"
+is_default = false
+
+[[branches]]
+name = "feature/auth-improvements"
+is_default = false
+
+[[branches]]
+name = "feature/mcp-integration"
+is_default = false
+
+[[branches]]
+name = "fix/memory-leak"
+is_default = false
+
+[[branches]]
+name = "release/v1.0.0"
+is_default = false

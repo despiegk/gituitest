@@ -1,0 +1,14 @@
+[package]
+name = "gitea-ui-clone"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+actix-web = "4"
+actix-files = "0.6"
+askama = { version = "0.12", features = ["with-actix-web"] }
+askama_actix = "0.14"
+serde = { version = "1.0", features = ["derive"] }
+toml = "0.8"
+tokio = { version = "1", features = ["full"] }
+chrono = { version = "0.4", features = ["serde"] }

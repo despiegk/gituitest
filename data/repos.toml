@@ -1,0 +1,36 @@
+[[repositories]]
+owner = "lhumina_research"
+name = "goose"
+description = "an open source, extensible AI agent that goes beyond code suggestions - install, execute, edit, and test with any LLM"
+is_mirror = true
+mirror_url = "https://github.com/block/goose.git"
+synced_ago = "13 minutes ago"
+stars = 0
+forks = 0
+watchers = 6
+commits = 2955
+branches = 968
+tags = 184
+size = "2.4 GiB"
+default_branch = "main"
+topics = ["hacktoberfest", "mcp"]
+ssh_url = "ssh://git@forge.ourworld.tf/lhumina_research/goose.git"
+https_url = "https://forge.ourworld.tf/lhumina_research/goose.git"
+website = "https://block.github.io/goose/"
+
+[[repositories]]
+owner = "lhumina_code"
+name = "osis"
+description = "OSIS - Object Storage Interface System"
+is_mirror = false
+stars = 0
+forks = 0
+watchers = 9
+commits = 42
+branches = 3
+tags = 5
+size = "4.1 KiB"
+default_branch = "main"
+topics = []
+ssh_url = "ssh://git@forge.ourworld.tf/lhumina_code/osis.git"
+https_url = "https://forge.ourworld.tf/lhumina_code/osis.git"
